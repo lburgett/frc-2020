@@ -32,11 +32,12 @@ def newLine(filtered_lines, new_line, filtered_line_img, x1, y1, x2, y2, X_TOTAL
 
     return X_TOTAL, Y_TOTAL
 
-NetworkTables.initialize(server='roborio-166-frc.local')
 
-sd = NetworkTables.getTable('SmartDashboard')
-# sd.putNumber('someNumber', 1234)
-# otherNumber = sd.getNumber('otherNumber')
+while 1:
+    NetworkTables.initialize(server='roborio-166-frc.local')
+    sd = NetworkTables.getTable('SmartDashboard')
+    if NetworkTables.isConnected():
+        break
 
 # Resolution
 WIDTH = 640
@@ -73,9 +74,12 @@ while True:
     frame = rs2.video_frame(frames.get_color_frame())
     depth = rs2.depth_frame(frames.get_depth_frame())
 
+    # Ok if we get a frame it does everything ahead
     if not frame:
         continue
 
+    # Most of the stuff below is just FUCKING with the image
+    # I'm not kidding, takes the frame as a list [] and makes it an array ([])
     IMG = np.asanyarray(frame.get_data())
 
     # Convert from RGB to HSV, helps with filtering
@@ -104,7 +108,7 @@ while True:
     # Find lines in selected image
     LINES = cv2.HoughLinesP(MED_EDGES, 1, radians(.5), 25, maxLineGap=25)
 
-    # If there are lines:
+    # If there are lines, like the target is seen
     if LINES is not None:
         NUM_LINES = len(LINES)
         FILTERED_LINES = []
@@ -122,12 +126,12 @@ while True:
                         FILTERED_LINES, NEW_LINE, FILTERED_LINE_IMG, x1, y1, x2, y2, X_TOTAL, Y_TOTAL)
             elif new_slope < -ANGLE_THRESHOLD or new_slope > ANGLE_THRESHOLD:
                 X_TOTAL, Y_TOTAL = newLine(FILTERED_LINES, NEW_LINE,
-                    FILTERED_LINE_IMG, x1, y1, x2, y2, X_TOTAL, Y_TOTAL)
+                                           FILTERED_LINE_IMG, x1, y1, x2, y2, X_TOTAL, Y_TOTAL)
 
-        NUM_LINES=len(FILTERED_LINES)
+        NUM_LINES = len(FILTERED_LINES)
         if FILTERED_LINES:
-            X_AVG=0
-            Y_AVG=0
+            X_AVG = 0
+            Y_AVG = 0
 
             if len(VALS) == POINT_SAMPLES:
                 VALS.pop(0)
@@ -140,8 +144,8 @@ while True:
                     X_AVG += X_VAL
                     Y_AVG += Y_VAL
 
-                X_AVG=int(X_AVG / POINT_SAMPLES)
-                Y_AVG=int(Y_AVG / POINT_SAMPLES)
+                X_AVG = int(X_AVG / POINT_SAMPLES)
+                Y_AVG = int(Y_AVG / POINT_SAMPLES)
 
                 offset = 2 * (X_AVG - (WIDTH/2)) / WIDTH
                 cv2.circle(FILTERED_LINE_IMG, (X_AVG, Y_AVG),
@@ -161,7 +165,7 @@ while True:
                 VALS.append([X_TOTAL/(2*NUM_LINES), Y_TOTAL/(2*NUM_LINES)])
 
         for LINE in LINES:
-            x1, y1, x2, y2=LINE[0]
+            x1, y1, x2, y2 = LINE[0]
             cv2.line(LINE_IMG, (x1, y1), (x2, y2), (0, 255, 0), 1)
 
     # Open the gallery of all my filtered works
@@ -176,7 +180,7 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    end_time=time.time()
+    end_time = time.time()
     # print(end_time - start_time)
 
 cv2.destroyAllWindows()
