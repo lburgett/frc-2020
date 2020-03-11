@@ -149,6 +149,9 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         RobotUtils.resetAll(this);
         CommandScheduler.getInstance().cancelAll();
+
+        // Disable recording when we are disabled
+        Shuffleboard.stopRecording();
     }
 
     /**
@@ -163,6 +166,8 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
+        // Enable recording in Auto
+        Shuffleboard.startRecording();
     }
 
     @Override
@@ -174,12 +179,18 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
+
+        // Enable recording in Teleop
+        Shuffleboard.startRecording();
     }
 
     @Override
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
+
+        // Enable recording in Test
+        Shuffleboard.startRecording();
     }
 
     public CommandBase regurgitate() {
