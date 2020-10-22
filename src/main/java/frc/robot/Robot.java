@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.logger.RobotLogger;
 import frc.robot.maps.RobotMap;
 import frc.robot.subsystems.ControlPanel;
 import frc.robot.subsystems.Drive;
@@ -58,10 +59,13 @@ public class Robot extends TimedRobot {
     final private NetworkTableEntry nameEntry = Shuffleboard.getTab("RobotData").addPersistent("RobotName", "Unknown")
             .getEntry();
     final private String robotName = nameEntry.getString("Unknown");
+    final RobotLogger logger = new RobotLogger(robotName);
+    final private RobotMap map = new RobotMap(logger);
 
-    final private RobotMap map = RobotUtils.getMapForName(robotName, RobotMap.class, "frc.robot.maps", new RobotMap());
+    // final private RobotMap map = RobotUtils.getMapForName(robotName,
+    // RobotMap.class, "frc.robot.maps", new RobotMap());
 
-    final private Drive drive = new Drive(map.getDriveMap());
+    final private Drive drive = new Drive(map.getDriveMap(), logger);
     final private Intake intake = new Intake(map.getIntakeMap());
     final private Shooter shooter = new Shooter(map.getShooterMap());
     final private ControlPanel controlPanel = new ControlPanel(map.getControlPanelMap());
@@ -104,7 +108,7 @@ public class Robot extends TimedRobot {
 
         Shuffleboard.getTab("Shuffleboard").add("Autonomous", autoChooser);
 
-        DashboardUtils.logTelemetry();
+        // DashboardUtils.logTelemetry();
 
         drive.setDefaultCommand(drive.drive(driveController::getTriggers, () -> driveController.getX(Hand.kLeft)));
         lift.setDefaultCommand(lift.moveLift(() -> -copilotController.getTriggers()));
@@ -139,6 +143,7 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
         Logger.updateEntries();
+        logger.updateFields();
 
     }
 

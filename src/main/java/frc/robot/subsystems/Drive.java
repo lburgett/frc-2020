@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import com.chopshop166.chopshoplib.maps.DifferentialDriveMap;
 import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
 import com.chopshop166.chopshoplib.sensors.IEncoder;
+
 import com.chopshop166.chopshoplib.ThresholdCheck;
 
 import edu.wpi.first.wpilibj.GyroBase;
@@ -16,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.logger.RobotLogger;
+import frc.robot.logger.SubsystemLogger;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -51,6 +54,8 @@ public class Drive extends SubsystemBase implements Loggable {
     @Log
     private final PIDController pid;
 
+    private final SubsystemLogger logger;
+
     private final double ALIGN_PID_FEED = 0.2;
 
     /**
@@ -59,7 +64,7 @@ public class Drive extends SubsystemBase implements Loggable {
      * 
      * @param map represents the drive map
      */
-    public Drive(final DifferentialDriveMap map) {
+    public Drive(final DifferentialDriveMap map, final RobotLogger logger) {
         super();
         rightMotorGroup = map.getRight();
         leftMotorGroup = map.getLeft();
@@ -69,6 +74,8 @@ public class Drive extends SubsystemBase implements Loggable {
         pid = new PIDController(0.0106, 0.0004, 0.008);
         driveRightEncoder = rightMotorGroup.getEncoder();
         driveLeftEncoder = leftMotorGroup.getEncoder();
+
+        this.logger = logger.getSubsystem("Drive");
     }
 
     public CommandBase cancel() {
@@ -95,7 +102,10 @@ public class Drive extends SubsystemBase implements Loggable {
         final CommandBase cmd = new RunCommand(() -> {
             final double yAxis = forward.getAsDouble();
             final double xAxis = turn.getAsDouble();
+
             driveTrain.arcadeDrive(yAxis, xAxis);
+
+            logger.writePoint(logger.createPoint().addField("yAxis", yAxis).addField("xAxis", xAxis));
         }, this);
         cmd.setName("Drive");
         return cmd;

@@ -66,6 +66,8 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
+    compile group: 'org.influxdb', name: 'influxdb-java', version: "2.20"
+
     compile 'com.google.guava:guava:28.0-jre'
     testImplementation 'junit:junit:4.12'
 

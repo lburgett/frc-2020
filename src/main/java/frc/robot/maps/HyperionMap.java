@@ -5,8 +5,14 @@ import com.chopshop166.chopshoplib.maps.DifferentialDriveMap;
 import com.chopshop166.chopshoplib.outputs.SendableSpeedController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.logger.RobotLogger;
+
 @RobotMapFor("Hyperion")
 public class HyperionMap extends RobotMap {
+
+    public HyperionMap(RobotLogger logger) {
+        super(logger);
+    }
 
     @Override
     public DifferentialDriveMap getDriveMap() {

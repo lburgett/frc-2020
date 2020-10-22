@@ -16,9 +16,14 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import frc.robot.logger.RobotLogger;
 
 @RobotMapFor("Tempest")
 public class TempestMap extends RobotMap {
+
+    public TempestMap(RobotLogger logger) {
+        super(logger);
+    }
 
     @Override
     public DifferentialDriveMap getDriveMap() {

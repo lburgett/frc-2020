@@ -1,5 +1,6 @@
 package frc.robot.maps;
 
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import com.chopshop166.chopshoplib.maps.DifferentialDriveMap;
@@ -16,20 +17,32 @@ import com.chopshop166.chopshoplib.sensors.MockDigitalInput;
 import com.chopshop166.chopshoplib.sensors.MockEncoder;
 
 import edu.wpi.first.wpilibj.AddressableLED;
+import frc.robot.logger.RobotLogger;
+import frc.robot.logger.SubsystemLogger;
 
 public class RobotMap {
+    RobotLogger logger;
+
+    public RobotMap(RobotLogger logger) {
+        this.logger = logger;
+    }
 
     public DifferentialDriveMap getDriveMap() {
         return new DifferentialDriveMap() {
+            SubsystemLogger drive_logger = logger.addSubsystem("Drive");
+            MockSpeedController right = new MockSpeedController();
+            MockSpeedController left = new MockSpeedController();
 
             @Override
             public SendableSpeedController getRight() {
-                return new MockSpeedController();
+                drive_logger.register(right, Map.of("Side", "Right", "Motor", "A"));
+                return right;
             }
 
             @Override
             public SendableSpeedController getLeft() {
-                return new MockSpeedController();
+                drive_logger.register(left, Map.of("Side", "Left", "Motor", "A"));
+                return left;
             }
         };
     }

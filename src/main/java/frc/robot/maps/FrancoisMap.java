@@ -22,12 +22,17 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import frc.robot.logger.RobotLogger;
 
 @RobotMapFor("Francois")
 public class FrancoisMap extends RobotMap {
     // controlPanel is defined here due to the gyro being plugged into this speed
     // controller as well as the control panel motor
     WPI_TalonSRX controlPanel = new WPI_TalonSRX(43);
+
+    public FrancoisMap(RobotLogger logger) {
+        super(logger);
+    }
 
     @Override
     public DifferentialDriveMap getDriveMap() {
