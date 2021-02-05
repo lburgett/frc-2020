@@ -1,15 +1,13 @@
 package frc.robot.subsystems;
 
-import com.chopshop166.chopshoplib.outputs.PIDSpeedController;
-import com.chopshop166.chopshoplib.sensors.IEncoder;
-
 import java.util.function.DoubleSupplier;
 
 import com.chopshop166.chopshoplib.PersistenceCheck;
+import com.chopshop166.chopshoplib.outputs.PIDSpeedController;
+import com.chopshop166.chopshoplib.sensors.IEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
